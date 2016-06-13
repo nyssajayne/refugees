@@ -1,0 +1,220 @@
+@font-face {
+  font-family: 'chunkfiveroman';
+  src: url('fonts/chunkfive-webfont.woff2') format('woff2'), url('fonts/chunkfive-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+html {
+  font-size: 62.5%;
+}
+html,
+body,
+header,
+nav,
+footer,
+aside,
+section,
+address,
+div,
+span,
+p,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+textarea,
+ul,
+li,
+img,
+svg {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+img,
+svg {
+  display: block;
+  border: 0;
+}
+ul,
+li {
+  list-style-type: none;
+}
+.clearfix {
+  clear: both;
+}
+.wrapper {
+  max-width: 102.4rem;
+  margin: auto;
+}
+header a img {
+  max-width: 100%;
+  margin: 0 auto 2.4rem;
+}
+header a #title {
+  max-width: 90%;
+}
+nav {
+  text-align: center;
+  font-family: 'chunkfiveroman', slab;
+  font-size: 3.6rem;
+}
+nav ul .menu-item,
+nav ul .page_item {
+  padding: 0 1.2rem;
+}
+nav ul .menu-item a,
+nav ul .page_item a,
+nav ul .menu-item a:visited,
+nav ul .page_item a:visited {
+  color: #7e5fa8;
+  text-decoration: none;
+}
+nav ul .menu-item a:hover,
+nav ul .page_item a:hover,
+nav ul .menu-item a:active,
+nav ul .page_item a:active {
+  color: #299858;
+}
+nav ul .current-menu-item a,
+nav ul .current_page_item a,
+nav ul .current-menu-item a:visited,
+nav ul .current_page_item a:visited,
+nav ul .current-menu-item a:hover,
+nav ul .current_page_item a:hover,
+nav ul .current-menu-item a:active,
+nav ul .current_page_item a:active {
+  color: #299858;
+}
+.nav-desktop {
+  width: 30%;
+  height: 30rem;
+  float: left;
+}
+.nav-sticky {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  width: 30%;
+  transform: translateX(-50%);
+}
+.nav-mob {
+  display: none;
+}
+article {
+  width: 70%;
+  float: left;
+  font-family: 'Raleway', serif;
+}
+article h2 {
+  font-size: 3.6rem;
+  text-align: center;
+  margin-bottom: 3.6rem;
+}
+article p {
+  font-size: 2.4rem;
+  margin-bottom: 2.4rem;
+  line-height: 3.6rem;
+}
+article a,
+article a:visited {
+  color: #7e5fa8;
+  text-decoration: none;
+  border-bottom: 0.1rem solid #7e5fa8;
+}
+article a:hover,
+article a:active {
+  border-bottom: 0;
+}
+article .share_link {
+  border: 0;
+}
+article .alignnone {
+  display: inline-block;
+  max-width: 30%;
+  height: auto;
+}
+form {
+  width: 100%;
+}
+form input,
+form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 2.4rem;
+  border: 0.1rem solid #000;
+}
+form input:focus,
+form textarea:focus {
+  outline: none;
+  border: 0.3rem solid #299858;
+}
+form input[type="submit"] {
+  border: 0.3rem solid #7e5fa8;
+  background-color: #fff;
+  color: #7e5fa8;
+  text-transform: lowercase;
+  font-family: 'Raleway', serif;
+  width: auto;
+}
+form input[type="submit"]:hover {
+  border-color: #299858;
+  color: #299858;
+}
+form .ajax-loader {
+  margin-top: 1.2rem;
+}
+form .wpcf7-response-output {
+  font-size: 2.4rem;
+  margin: 0 0 2.4rem;
+  padding: 0.6rem 1.2rem;
+  width: 100%;
+}
+form p .required {
+  color: #FF0000;
+}
+@media screen and (max-width: 768px) {
+  .nav-desktop {
+    display: none;
+  }
+  .nav-mob {
+    width: 90%;
+    margin: auto;
+    float: none;
+    display: block;
+  }
+  .nav-mob ul li,
+  .nav-mob ul .menu-item,
+  .nav-mob ul .page_item {
+    display: block;
+    padding: 0 1.2rem;
+  }
+  .nav-mob ul #nav-menu-mob {
+    color: #7e5fa8;
+    border: 0.1rem solid #7e5fa8;
+    width: 28rem;
+    margin: auto;
+    cursor: pointer;
+    margin-bottom: 2.4rem;
+  }
+  .nav-mob ul #nav-menu-mob i {
+    margin-right: 2.4rem;
+  }
+  article {
+    width: 90%;
+    float: none;
+    margin: auto;
+  }
+}
+@media screen and (max-width: 480px) {
+  html {
+    font-size: 45%;
+  }
+  article p {
+    line-height: 3rem;
+  }
+}

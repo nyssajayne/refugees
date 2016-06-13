@@ -6,12 +6,12 @@ Visit at http://www.vote1refugees.com
 # About
 Currently, anyone who comes to Australia seeking asylum via boat is subjected to mandatory offshore detention -- people are indefinately kept in detention centres on Manus Island and Nauru without any chance of setting foot in Australia, even if they are deemed a legitimate refugee.
 
-# Both the major political parties in Australia support this abhorent practice of detaining people. There is an election coming up in Australia in July and this time, my friend Brendan and I wanted to tell people how to vote for a candidate that will speak up for the asylum seekers who can't.
+Both the major political parties in Australia support this abhorent practice of detaining people. There is an election coming up in Australia in July and this time, my friend Brendan and I wanted to tell people how to vote for a candidate that will speak up for the asylum seekers who can't.
 
 # The Pledge
 Phase 1 of the project involves a pledge, that a user of the site commits to voting for a candidate committed to the interests of those currently detained offshore. The results of the pledge are then reflected back to the users.
 
-# We tossed up between collecting signatures ourselves, which would've required a data collection policy, or using an online petition site. change.org provides an API (although it is no longer maintained) and meant that we could focus on the actual message of the site. Keeping the users on the page was important, as there are other resources on the page vital to the cause and we wanted to maintain the users's interest.
+We tossed up between collecting signatures ourselves, which would've required a data collection policy, or using an online petition site. change.org provides an API (although it is no longer maintained) and meant that we could focus on the actual message of the site. Keeping the users on the page was important, as there are other resources on the page vital to the cause and we wanted to maintain the users's interest.
 
 # The Postcode Checker
 Phase 2 is a postcode checker. A list of current politiicans and electorates is gathered from the API's provided by theyvoteforyou.org and openaustralia.org, users can type in their postcode and check to see their member's position on mandatory dentention in a simple yes, they support refugees or no, they don't manner.

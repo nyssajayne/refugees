@@ -19,7 +19,12 @@ xmlrpc.php
 wp-admin/
 wp-includes/
 wp-content/**/*
+
 !wp-content/themes/vote1refugees/
 wp-content/themes/vote1refugees/fonts
 wp-content/themes/vote1refugees/images/originals
+
+!wp-content/plugins/vote1refugees/
+wp-content/plugins/vote1refugees/_archive
+
 *.DS_Store

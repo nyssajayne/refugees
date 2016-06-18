@@ -61,6 +61,38 @@ function vote1refugees_fetch_politicians() {
     return $politicians_array;
 }
 
+function vote1refugees_fetch_politicians_old() {
+	global $wpdb;
+	include('vote1refugees_variables.php');
+
+	$table_name = $wpdb->prefix . 'refugees_old';
+
+    $wpdb_politicians = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
+
+    $tvfy_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
+    $tvfy_array = json_decode($tvfy_json, true);
+
+    $politicians_array = array();
+
+    foreach($tvfy_array as $tvfy_politician){
+        foreach($wpdb_politicians as $wpdb_politician) {
+            if($wpdb_politician['id'] == $tvfy_politician['id']) {
+
+            	$politicians_array[] = array('id' => $wpdb_politician['id'],
+            		'name' => $tvfy_politician['latest_member']['name']['first'] . " " . $tvfy_politician['latest_member']['name']['last'],
+            		'party' => $tvfy_politician['latest_member']['party'],
+            		'electorate' => $tvfy_politician['latest_member']['electorate'],
+            		'house' => $tvfy_politician['latest_member']['house'],
+            		'flag' => $wpdb_politician['flag'],
+            		'comment' => $wpdb_politician['comment'],
+            		'contact' => $wpdb_politician['contact']);
+            }
+        }
+    }
+
+    return $politicians_array;
+}
+
 function vote1refugees_add_menu_page() {
 	add_menu_page(
 		'Vote 1 Refugees',
@@ -77,6 +109,15 @@ function vote1refugees_add_menu_page() {
 		'manage_options',
 		'vote1refugees_settings',
 		'vote1refugees_add_settings_page'
+	);
+
+	add_submenu_page(
+		'vote1refugees_settings',
+		'Edit Politicians (old)',
+		'Edit Politicians (old)',
+		'read',
+		'edit_politicians_old',
+		'vote1refugees_add_edit_politicians_page_old'
 	);
 
 	add_submenu_page(
@@ -164,6 +205,13 @@ function vote1refugees_settings_init() {
 }
 
 add_action( 'admin_init', 'vote1refugees_settings_init' );
+
+function vote1refugees_add_edit_politicians_page_old() {
+    ob_start();
+	include('vote1refugees_edit_politicians_old.php');
+	$content = ob_get_clean();
+	echo $content;
+}
 
 function vote1refugees_add_edit_politicians_page() {
     ob_start();
@@ -308,7 +356,7 @@ function vote1refugees_fetch_petition_auth_key() {
 
 function vote1refugees_fetch_signatures() {
 	include('vote1refugees_variables.php');
-	
+
 	$api_key = $CHANGE_KEY;
 	$secret = $CHANGE_SECRET;
 	$petition_id = vote1refugees_fetch_petition_id();

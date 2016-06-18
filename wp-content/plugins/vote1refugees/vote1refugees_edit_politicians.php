@@ -77,8 +77,8 @@
             $green = null;
             $unknown = null;
 
-            $comment;
-            $contact;
+            $comment = '';
+            $contact = '';
 
             if(isset($politician['comment'])) {
                 $comment = $politician['comment'];

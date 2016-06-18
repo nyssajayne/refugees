@@ -1,0 +1,12 @@
+<?PHP
+	global $THEYVOTEFORYOU;
+	$THEYVOTEFORYOU = "boakgJ0aX65zimbmRrlt";
+
+	global $CHANGE_KEY;
+	$CHANGE_KEY = '7a97d1f7e5c282544a45e6bcde9f1a55679975c35309f454422121da6ecf5e60';
+
+	global $CHANGE_SECRET;
+	$CHANGE_SECRET = 'fcb4ec6a5b917ea3fee7e3196256e9937a455b7b33928fcabc72e89147c3dbfb';
+
+	global $OA_KEY;
+	$OA_KEY = 'GUzCcACu8dKPCpZnRkHFogcU';

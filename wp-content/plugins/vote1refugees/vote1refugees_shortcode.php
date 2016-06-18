@@ -1,4 +1,4 @@
-<?php include('vote1refugees_variables.php'); ?>
+<?php  ?>
 
 <form action="<?php echo esc_attr($_SERVER['REQUEST_URI']); ?>" method="post" id="search_politicians">
 <input type="number" id="postcode" name="postcode" />
@@ -8,7 +8,7 @@
 <?php if(isset($_POST['postcode'])) {
 	$politicians_array = vote1refugees_fetch_politicians();
 	$postcode = $_POST['postcode'];
-	$oa_js = file_get_contents('http://www.openaustralia.org.au/api/getDivisions?key=' . $OA_KEY . '&postcode=' . $postcode . '&output=php');
+	$oa_js = file_get_contents('http://www.openaustralia.org.au/api/getDivisions?key=GUzCcACu8dKPCpZnRkHFogcU&postcode=' . $postcode . '&output=php');
 	$oa_php = unserialize($oa_js);
 
 	$flags = array();

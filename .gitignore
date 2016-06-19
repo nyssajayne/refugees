@@ -27,4 +27,7 @@ wp-content/themes/vote1refugees/images/originals
 !wp-content/plugins/vote1refugees/
 wp-content/plugins/vote1refugees/_archive
 
+!wp-content/plugins/change-org/
+wp-content/plugins/change-org/change-org_variables.php
+
 *.DS_Store

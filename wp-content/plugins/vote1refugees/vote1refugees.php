@@ -288,7 +288,6 @@ function vote1refugees_share_twitter() {
 
 	$twitter_link = 'twitter.com/intent/tweet?text=' . $sharing_text . ' ' . get_bloginfo( 'url' );
 
-	//return "<a href=\"" . $twitter_link . "\" target=\"_blank\">Twitter</a>";
 	return $twitter_link;
 }
 
@@ -297,7 +296,6 @@ add_shortcode( 'share_twitter', 'vote1refugees_share_twitter' );
 function vote1refugees_share_facebook() {
 	$fb_link = 'www.facebook.com/sharer/sharer.php?u=' . get_bloginfo( 'url' ) . '&title=' . get_bloginfo( 'title' );
 
-	//return "<a href=\"" . $fb_link . "\" target=\"_blank\">Facebook</a>";
 	return $fb_link;
 }
 
@@ -314,6 +312,10 @@ add_shortcode( 'share_email', 'vote1refugees_share_email' );
 function vote1refugees_install() {
 	global $wpdb;
 
+	global $vote1refugees_db_version;
+	$vote1refugees_db_version = '0.1';
+	$vote1refugees_installed_version = get_option( 'vote1refugees_db_version' );
+
 	$table_name = $wpdb->prefix . "refugees";
 
 	$charset_collate = $wpdb->get_charset_collate();
@@ -327,10 +329,53 @@ function vote1refugees_install() {
 	) $charset_collate;";
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
+		
 	dbDelta( $sql );
 
-	vote1refugees_add_politicians();
+	add_option( 'vote1refugees_db_version', $vote1refugees_db_version );
+
+	if ( $vote1refugees_installed_version != $vote1refugees_db_version ) {
+
+		$table_name_refugees = $wpdb->prefix . "refugees";
+		$table_name_party = $wpdb->prefix . "party";
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name_refugees (
+			id mediumint(6) NOT NULL,
+			firstName varchar(120),
+			lastName varchar(120),
+			electorate varchar(120),
+			ballotPos tinyint(1),
+			partyID tinyint(1),
+			contactNo varchar(120),
+			contactEmail varchar(120)
+			flag tinyint(1),
+			comment varchar(260),
+			UNIQUE KEY id (id)
+		) $charset_collate;
+		CREATE TABLE $table_name_party (
+			id mediumint(6) NOT NULL,
+			partyName varchar(120),
+			UNIQUE KEY id (id)
+		) $charset_collate;";
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		
+		dbDelta( $sql );
+
+		update_option( 'vote1refugees_db_version', $vote1refugees_db_version );
+	}
 }
+
+function vote1refugees_update_db_check() {
+	global $vote1refugees_db_version;
+
+	if(get_site_option('vote1refugees_db_version') != $vote1refugees_db_version) {
+		vote1refugees_install();
+	}
+}
+
+add_action( 'plugins_loaded', 'vote1refugees_update_db_check' );
 
 register_activation_hook( __FILE__, 'vote1refugees_install' );

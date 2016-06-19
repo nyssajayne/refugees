@@ -30,3 +30,39 @@ add_action( 'after_setup_theme', 'register_menu' );
 function register_menu() {
   register_nav_menu( 'primary', __( 'Primary Menu', 'theme-slug' ) );
 }
+
+/* Social sharing shortcode */
+function vote1refugees_shortcode_social() {
+	ob_start();
+	include('vote1refugees_social.php');
+	$content = ob_get_clean();
+	return $content;
+}
+
+add_shortcode( 'social', 'vote1refugees_shortcode_social' );
+
+function vote1refugees_share_twitter() {
+	$sharing_text = esc_attr(get_option('sharing_options_twitter'));
+
+	$twitter_link = 'twitter.com/intent/tweet?text=' . $sharing_text . ' ' . get_bloginfo( 'url' );
+
+	return $twitter_link;
+}
+
+add_shortcode( 'share_twitter', 'vote1refugees_share_twitter' );
+
+function vote1refugees_share_facebook() {
+	$fb_link = 'www.facebook.com/sharer/sharer.php?u=' . get_bloginfo( 'url' ) . '&title=' . get_bloginfo( 'title' );
+
+	return $fb_link;
+}
+
+add_shortcode( 'share_facebook', 'vote1refugees_share_facebook' );
+
+function vote1refugees_share_email(){
+	$email_link = 'mailto:%20?subject=' . get_bloginfo( 'title' ) . '&body=' . esc_attr(get_option('sharing_options_email')) . ' ' . get_bloginfo( 'url' );
+
+	return $email_link;
+}
+
+add_shortcode( 'share_email', 'vote1refugees_share_email' );

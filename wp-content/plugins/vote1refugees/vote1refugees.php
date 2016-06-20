@@ -288,14 +288,15 @@ function vote1refugees_fetch_candidates() {
     	}
 
     	$candidates[] = array( 'id' => $candidate['id'],
-    		'name' => $candidate['firstName'] . ' ' . $candidate['lastName'],
-    		'electorate' => $candidate['electorate'],
-    		'house' => $house,
-    		'party' => $party,
-    		'ballotPos' => $candidate['ballotPos'],
-    		'phone' => $candidate['contactNo'],
-    		'email' => $candidate['contactEmail'],
-    		'comment' => $candidate['comment']
+    		'name'			=> $candidate['firstName'] . ' ' . $candidate['lastName'],
+    		'electorate'	=> $candidate['electorate'],
+    		'house'			=> $house,
+    		'party'			=> $party,
+    		'ballotPos'		=> $candidate['ballotPos'],
+    		'phone'			=> $candidate['contactNo'],
+    		'email'			=> $candidate['contactEmail'],
+    		'comment'		=> $candidate['comment'],
+    		'flag'			=> $candidate['flag']
     		);
     }
 

@@ -8,6 +8,8 @@
 <?php if(isset($_POST['postcode'])) {
 	$politicians_array = vote1refugees_fetch_candidates();
 	$postcode = $_POST['postcode'];
+
+	//Find the electorates
 	$oa_js = file_get_contents('http://www.openaustralia.org.au/api/getDivisions?key=GUzCcACu8dKPCpZnRkHFogcU&postcode=' . $postcode . '&output=php');
 	$oa_php = unserialize($oa_js);
 
@@ -35,7 +37,7 @@
 	echo "<p>Representatives in " . $postcode . "</p>";
 
 	if(count($oa_php) > 1) {
-		echo "<p>Your postcode crosses two electorates. Please <a href=\"http://www.aec.gov.au/About_AEC/Contact_the_AEC/index.htm\" target=\"_blank\">contact the AEC</a> to confirm your electorate.</p>";
+		echo "<p>Your postcode crosses two or more electorates. Please <a href=\"http://www.aec.gov.au/About_AEC/Contact_the_AEC/index.htm\" target=\"_blank\">contact the AEC</a> to confirm your electorate.</p>";
 	}
 
 	if(count($states) > 1) {
@@ -44,12 +46,14 @@
 
 
 	foreach($politicians_array as $politician) {
+		//House of reps
 		foreach($oa_php as $electorate) {
 			if($electorate['name'] == $politician['electorate']) {
 				echo "<p>" . $politician['name'] . " (" . $politician['party'] . " - " . $politician['house'] . ") in " . $politician['electorate'] . "</p>";
 			}
 		}
 
+		//Senate
 		foreach ($states as $state) {
 			if(strcmp($politician['electorate'],$state) == 0) {
 				echo "<p>" . $politician['name'] . " (" . $politician['party'] . " - " . $politician['house'] . ") in " . $politician['electorate'] . "</p>";

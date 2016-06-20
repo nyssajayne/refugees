@@ -156,18 +156,29 @@ form {
 		border: 0.3rem solid @green;
 	}
 
-	input[type="submit"] {
+	input[type="submit"], input[type="reset"] {
 		border: 0.3rem solid @purple;
 		background-color: #fff;
 		color: @purple;
 		text-transform: lowercase;
 		font-family: @raleway;
 		width: auto;
+		margin-right: 1.3rem;
 	}
 
-	input[type="submit"]:hover {
+	input[type="submit"]:hover, input[type="reset"]:hover {
 		border-color: @green;
 		color: @green;
+	}
+
+	#postcode {
+		width: auto;
+		margin-right: 1.3rem;
+		margin: 0.3rem;
+	}
+
+	#postcode:active {
+		margin: 0;
 	}
 
 	.ajax-loader {

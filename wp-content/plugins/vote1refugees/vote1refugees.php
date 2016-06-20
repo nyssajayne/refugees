@@ -45,6 +45,15 @@ function vote1refugees_add_menu_page() {
 		'edit_candidates',
 		'vote1refugees_add_edit_candidates_page'
 	);
+
+	add_submenu_page(
+		'vote1refugees_settings',
+		'Edit Parties',
+		'Edit Parties',
+		'read',
+		'edit_parties',
+		'vote1refugees_add_edit_parties_page'
+	);
 }
 
 add_action( 'admin_menu', 'vote1refugees_add_menu_page' );
@@ -133,6 +142,13 @@ function vote1refugees_add_edit_politicians_via_tvfy() {
 function vote1refugees_add_edit_candidates_page() {
     ob_start();
 	include('vote1refugees_edit_candidates.php');
+	$content = ob_get_clean();
+	echo $content;
+}
+
+function vote1refugees_add_edit_parties_page() {
+    ob_start();
+	include('vote1refugees_edit_parties.php');
 	$content = ob_get_clean();
 	echo $content;
 }
@@ -302,12 +318,32 @@ function vote1refugees_fetch_candidates() {
 
     return $candidates;
 }
+
+function vote1refugees_fetch_parties() {
+	global $wpdb;
+
+	$table_name_party = $wpdb->prefix . 'party';
+
+	$wpdb_parties = $wpdb->get_results( "SELECT * FROM $table_name_party", ARRAY_A );
+
+    $parties = array();
+
+    foreach ($wpdb_parties as $party) {
+    	$parties[] = array( 'id' => $party['id'],
+    	'name'	=> $party['partyName'],
+    	'flag'	=> $party['flag'],
+    	'comment'	=> $party['comment'],
+    	'reference'	=> $party['reference'] );
+    }
+
+    return $parties;
+}
  
 function vote1refugees_install() {
 	global $wpdb;
 
 	global $vote1refugees_db_version;
-	$vote1refugees_db_version = '0.2';
+	$vote1refugees_db_version = '0.1';
 	$vote1refugees_installed_version = get_option( 'vote1refugees_db_version' );
 
 	$table_name = $wpdb->prefix . "refugees";
@@ -347,19 +383,21 @@ function vote1refugees_install() {
 			contactNo varchar(120),
 			contactEmail varchar(120),
 			flag tinyint(1),
-			comment varchar(260),
+			comment varchar(2000),
 			UNIQUE KEY id (id)
 		) $charset_collate;
 		CREATE TABLE $table_name_party (
 			id mediumint(6) NOT NULL,
 			partyName varchar(120),
 			flag tinyint(1),
+			comment varchar(2000),
+			reference varchar(260),
 			UNIQUE KEY id (id)
 		) $charset_collate;
 		CREATE TABLE $table_name_politicians (
 			id mediumint(6) NOT NULL,
 			flag tinyint(1),
-			comment varchar(260),
+			comment varchar(2000),
 			contact varchar(120),
 			UNIQUE KEY id (id)
 		) $charset_collate;";

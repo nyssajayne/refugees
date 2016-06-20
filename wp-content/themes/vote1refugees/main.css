@@ -153,17 +153,28 @@ form textarea:focus {
   outline: none;
   border: 0.3rem solid #299858;
 }
-form input[type="submit"] {
+form input[type="submit"],
+form input[type="reset"] {
   border: 0.3rem solid #7e5fa8;
   background-color: #fff;
   color: #7e5fa8;
   text-transform: lowercase;
   font-family: 'Raleway', serif;
   width: auto;
+  margin-right: 1.3rem;
 }
-form input[type="submit"]:hover {
+form input[type="submit"]:hover,
+form input[type="reset"]:hover {
   border-color: #299858;
   color: #299858;
+}
+form #postcode {
+  width: auto;
+  margin-right: 1.3rem;
+  margin: 0.3rem;
+}
+form #postcode:active {
+  margin: 0;
 }
 form .ajax-loader {
   margin-top: 1.2rem;

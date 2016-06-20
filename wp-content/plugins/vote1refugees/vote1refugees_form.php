@@ -4,6 +4,7 @@
 
 	$table_name = $wpdb ->prefix . "candidates";
 
+
 	if(isset($_POST['flag'])) {
 		foreach($_POST['flag'] as $id=>$flag) {
 			$phone = $_POST['phone_' . $id];
@@ -22,7 +23,7 @@
 				array(
 					'id' 			=> $id
 				),
-				array('%d', '%s', '%s', '%s', '%s', '%s'),
+				array('%d', '%d', '%s', '%s', '%s'),
 				array('%d')
 			);
 		}

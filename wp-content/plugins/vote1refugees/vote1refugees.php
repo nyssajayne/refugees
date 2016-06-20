@@ -273,11 +273,19 @@ function vote1refugees_fetch_candidates() {
 
     foreach ($wpdb_candidates as $candidate) {
     	//Fetch the party
-    	$party;
+    	$party_name;
+    	$party_flag;
+    	$party_pos;
+    	$party_quote;
+    	$party_ref;
 
     	foreach($wpdb_parties as $parties) {
     		if($candidate['partyID'] == $parties['id']) {
-    			$party = $parties['partyName'];
+    			$party_name = $parties['partyName'];
+    			$party_flag = $parties['flag'];
+    			$party_pos = $parties['comment'];
+    			$party_quote = $parties['quote'];
+    			$party_ref = $parties['reference'];
     		}
     	}
 
@@ -291,23 +299,15 @@ function vote1refugees_fetch_candidates() {
     		$house = 'senate';
     	}
 
-    	//Fetch political position
-    	$position;
-
-    	if($candidate['flag'] == NULL) {
-    		if($candidate['partyID'] == 1) {
-    			$position = 'yay';
-    		}
-    		else {
-    			$position = 'nay';
-    		}
-    	}
-
     	$candidates[] = array( 'id' => $candidate['id'],
     		'name'			=> $candidate['firstName'] . ' ' . $candidate['lastName'],
     		'electorate'	=> $candidate['electorate'],
     		'house'			=> $house,
-    		'party'			=> $party,
+    		'partyName'		=> $party_name,
+    		'partyFlag'		=> $party_flag,
+    		'partyPos'		=> $party_pos,
+    		'partyQuote'	=> $party_quote,
+    		'partyRef'		=> $party_ref,
     		'ballotPos'		=> $candidate['ballotPos'],
     		'phone'			=> $candidate['contactNo'],
     		'email'			=> $candidate['contactEmail'],
@@ -333,6 +333,7 @@ function vote1refugees_fetch_parties() {
     	'name'	=> $party['partyName'],
     	'flag'	=> $party['flag'],
     	'comment'	=> $party['comment'],
+    	'quote'	=> $party['quote'],
     	'reference'	=> $party['reference'] );
     }
 
@@ -343,7 +344,7 @@ function vote1refugees_install() {
 	global $wpdb;
 
 	global $vote1refugees_db_version;
-	$vote1refugees_db_version = '0.1';
+	$vote1refugees_db_version = '0.2';
 	$vote1refugees_installed_version = get_option( 'vote1refugees_db_version' );
 
 	$table_name = $wpdb->prefix . "refugees";
@@ -391,6 +392,7 @@ function vote1refugees_install() {
 			partyName varchar(120),
 			flag tinyint(1),
 			comment varchar(2000),
+			quote varchar(2000),
 			reference varchar(260),
 			UNIQUE KEY id (id)
 		) $charset_collate;

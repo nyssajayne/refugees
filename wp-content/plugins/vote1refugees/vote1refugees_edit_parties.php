@@ -28,6 +28,7 @@
                 <td></td>
                 <td></td>
                 <td><strong>Any comments?</strong></td>
+                <td><strong>Policy quote</strong></td>
                 <td><strong>Reference</strong></td>
             </tr>
         
@@ -66,6 +67,7 @@
                 <option value=\"4\"" . $unclear . ">Unclear</option>
                 </select></td>";
             echo "<td><input type=\"text\" id=\"comment_" . $party['id'] . "\" name=\"comment_" . $party['id'] . "\" value=\"" . stripslashes($party['comment']) . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"quote_" . $party['id'] . "\" name=\"quote_" . $party['id'] . "\" value=\"" . stripslashes($party['quote']) . "\" /></td>";
             echo "<td><input type=\"text\" id=\"reference_" . $party['id'] . "\" name=\"reference_" . $party['id'] . "\" value=\"" . $party['reference'] . "\" /></td>";
             echo "</tr>";
 

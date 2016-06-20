@@ -3,7 +3,7 @@
 Plugin Name: Vote 1 Refugees
 Plugin URI: http://www.shoesandblues.com
 Description: Is your representative for or against mandatory detention this election?
-Version: 0.1
+Version: 0.2
 Author: Nyssa & Brendan
 Author URI: http://www.shoesandblues.com
 License: This Vote 1 Refugees Wordpress Plugin is made available under the Open Database License: http://opendatacommons.org/licenses/odbl/1.0/. Any rights in individual contents of the database are licensed under the Database Contents License: http://opendatacommons.org/licenses/dbcl/1.0/
@@ -123,7 +123,7 @@ function vote1refugees_settings_init() {
 
 add_action( 'admin_init', 'vote1refugees_settings_init' );
 
-function vote1refugees_add_edit_politicians_page_via_tvfy() {
+function vote1refugees_add_edit_politicians_via_tvfy() {
     ob_start();
 	include('vote1refugees_edit_politicians_via_tvfy.php');
 	$content = ob_get_clean();
@@ -199,7 +199,7 @@ function vote1refugees_add_politicians_via_tvfy() {
 	$politicians_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
 	$politicians_array = json_decode($politicians_json, true);
 
-	$table_name = $wpdb->prefix . 'refugees';
+	$table_name = $wpdb->prefix . 'politicians';
 
 	foreach($politicians_array as $key => $value) {
 		$wpdb->insert(
@@ -215,7 +215,7 @@ function vote1refugees_fetch_politicians_via_tvfy() {
 	global $wpdb;
 	include('vote1refugees_variables.php');
 
-	$table_name = $wpdb->prefix . 'refugees';
+	$table_name = $wpdb->prefix . 'politicians';
 
     $wpdb_politicians = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
 
@@ -242,12 +242,71 @@ function vote1refugees_fetch_politicians_via_tvfy() {
 
     return $politicians_array;
 }
+
+/* Current Candidates */
+function vote1refugees_fetch_candidates() {
+	global $wpdb;
+
+	$table_name_candidates = $wpdb->prefix . 'candidates';
+	$table_name_party = $wpdb->prefix . 'party';
+
+    $wpdb_candidates = $wpdb->get_results( "SELECT * FROM $table_name_candidates", ARRAY_A );
+    $wpdb_parties = $wpdb->get_results( "SELECT * FROM $table_name_party", ARRAY_A );
+
+    $candidates = array();
+
+    foreach ($wpdb_candidates as $candidate) {
+    	//Fetch the party
+    	$party;
+
+    	foreach($wpdb_parties as $parties) {
+    		if($candidate['partyID'] == $parties['id']) {
+    			$party = $parties['partyName'];
+    		}
+    	}
+
+    	//Fetch the house
+    	$house;
+
+    	if(is_numeric($candidate['house'])) {
+    		$house = 'reps';
+    	}
+    	else {
+    		$house = 'senate';
+    	}
+
+    	//Fetch political position
+    	$position;
+
+    	if($candidate['flag'] == NULL) {
+    		if($candidate['partyID'] == 1) {
+    			$position = 'yay';
+    		}
+    		else {
+    			$position = 'nay';
+    		}
+    	}
+
+    	$candidates[] = array( 'id' => $candidate['id'],
+    		'name' => $candidate['firstName'] . ' ' . $candidate['lastName'],
+    		'electorate' => $candidate['electorate'],
+    		'house' => $house,
+    		'party' => $party,
+    		'ballotPos' => $candidate['ballotPos'],
+    		'phone' => $candidate['contactNo'],
+    		'email' => $candidate['contactEmail'],
+    		'comment' => $candidate['comment']
+    		);
+    }
+
+    return $candidates;
+}
  
 function vote1refugees_install() {
 	global $wpdb;
 
 	global $vote1refugees_db_version;
-	$vote1refugees_db_version = '0.1';
+	$vote1refugees_db_version = '0.2';
 	$vote1refugees_installed_version = get_option( 'vote1refugees_db_version' );
 
 	$table_name = $wpdb->prefix . "refugees";
@@ -270,20 +329,22 @@ function vote1refugees_install() {
 
 	if ( $vote1refugees_installed_version != $vote1refugees_db_version ) {
 
-		$table_name_refugees = $wpdb->prefix . "refugees";
+		$table_name_candidates = $wpdb->prefix . "candidates";
+		$table_name_politicians = $wpdb->prefix . "politicians";
 		$table_name_party = $wpdb->prefix . "party";
 
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = "CREATE TABLE $table_name_refugees (
+		$sql = "CREATE TABLE $table_name_candidates (
 			id mediumint(6) NOT NULL,
 			firstName varchar(120),
 			lastName varchar(120),
 			electorate varchar(120),
-			ballotPos tinyint(1),
+			house varchar(2),
+			ballotPos varchar(2),
 			partyID tinyint(1),
 			contactNo varchar(120),
-			contactEmail varchar(120)
+			contactEmail varchar(120),
 			flag tinyint(1),
 			comment varchar(260),
 			UNIQUE KEY id (id)
@@ -291,6 +352,14 @@ function vote1refugees_install() {
 		CREATE TABLE $table_name_party (
 			id mediumint(6) NOT NULL,
 			partyName varchar(120),
+			flag tinyint(1),
+			UNIQUE KEY id (id)
+		) $charset_collate;
+		CREATE TABLE $table_name_politicians (
+			id mediumint(6) NOT NULL,
+			flag tinyint(1),
+			comment varchar(260),
+			contact varchar(120),
 			UNIQUE KEY id (id)
 		) $charset_collate;";
 
@@ -299,6 +368,8 @@ function vote1refugees_install() {
 		dbDelta( $sql );
 
 		update_option( 'vote1refugees_db_version', $vote1refugees_db_version );
+
+		//vote1refugees_add_politicians_via_tvfy();
 	}
 }
 

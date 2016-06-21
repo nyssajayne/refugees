@@ -344,7 +344,7 @@ function vote1refugees_install() {
 	global $wpdb;
 
 	global $vote1refugees_db_version;
-	$vote1refugees_db_version = '0.2';
+	$vote1refugees_db_version = '0.1';
 	$vote1refugees_installed_version = get_option( 'vote1refugees_db_version' );
 
 	$table_name = $wpdb->prefix . "refugees";

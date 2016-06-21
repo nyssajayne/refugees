@@ -139,15 +139,19 @@ article .alignnone {
   height: auto;
 }
 article .postcode_results h3 {
-  font-size: 2.4rem;
+  font-size: 3.6rem;
   font-weight: 700;
-  margin-left: 2.4rem;
+  margin-bottom: 3.6rem;
+  margin-top: 3.6rem;
 }
 article .postcode_results h4 {
   font-size: 2.4rem;
-  margin-bottom: 2.4rem;
+  font-weight: 700;
+}
+article .postcode_results h5 {
+  font-size: 2.4rem;
+  margin-bottom: 1.8rem;
   font-weight: 400;
-  margin-left: 2.4rem;
 }
 article .postcode_results .quote {
   font-style: italic;
@@ -159,7 +163,10 @@ article .postcode_results hr {
   margin-bottom: 2.4rem;
 }
 article .postcode_results span {
-  display: inline-block;
+  float: left;
+}
+article .postcode_results .clearfix {
+  margin-bottom: 1.8rem;
 }
 article .postcode_results .badge {
   width: 25%;
@@ -170,6 +177,14 @@ article .postcode_results .badge img {
 }
 article .postcode_results .name {
   width: 75%;
+  padding-left: 2.4rem;
+}
+article .postcode_results .contact {
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+article .postcode_results .bold {
+  font-weight: 700;
 }
 form {
   width: 100%;

@@ -16,31 +16,20 @@
 	$state_js = file_get_contents('http://v0.postcodeapi.com.au/suburbs/' . $postcode . '.json');
 	$state_php = json_decode($state_js, true);
 
-	//Find the state and check if there's more than one per postcode
-	$states = array();
-	$states[] = $state_php[0]['state']['abbreviation'];
-	$first_state = $state_php[0]['state']['abbreviation'];
-
-	foreach ($state_php as $state) {
-		if(strcmp($first_state, $state['state']['abbreviation']) != 0) {
-			$states[] = $state['state']['abbreviation'];
-			$first_state = $state['state']['abbreviation'];
-		} 
-	}
-
 	$flags = array();
 	$flags[1] = esc_attr(get_option('flag_description_green'));
 	$flags[2] = esc_attr(get_option('flag_description_orange'));
 	$flags[3] = esc_attr(get_option('flag_description_red'));
 	$flags[4] = esc_attr(get_option('flag_description_unknown'));
 
-	if(count($states) > 1) {
-		echo "<p>Your postcode crosses two states. Please <a href=\"http://www.aec.gov.au/About_AEC/Contact_the_AEC/index.htm\" target=\"_blank\">contact the AEC</a> to confirm your electorate.</p>";
-	}
-
 	echo "<div class=\"postcode_results\">";
 
+	echo "<p><a href=\"#representatives\">House of Representatives</a> | <a href=\"#senate\">Senate</a>";
+
 	//House of Reps
+	echo "<div id=\"representatives\">";
+	echo "<h3>House of Representatives</h3>";
+
 	if(count($oa_php) > 1) {
 		echo "<p>Your postcode, " . $postcode . ", crosses two or more electorates. Please <a href=\"http://www.aec.gov.au/About_AEC/Contact_the_AEC/index.htm\" target=\"_blank\">contact the AEC</a> to if you're unsure of your electorate.</p>";
 		echo "<p>";
@@ -52,7 +41,7 @@
 		echo "</p>";
 	}
 	else {
-		echo "<h3>" . $postcode . " means your electorate is " . $oa_php[0]['name'] . "</h3>";
+		echo "<p>" . $postcode . " means your electorate is " . $oa_php[0]['name'] . "</p>";
 	}
 
 	foreach($oa_php as $electorate) {
@@ -112,16 +101,53 @@
 		}
 	}
 
-	//Senate
-	foreach($politicians_array as $politician) {
-		$flag = $politician['flag'];
+	echo "</div>";
+	echo "<div id=\"senate\">";
 
-		if(($flag == NULL) || ($flag == 4)) {
-			$flag = $politician['partyFlag'];
+	//Senate
+	//Find the state and check if there's more than one per postcode
+	$states = array();
+	$states[] = $state_php[0]['state']['abbreviation'];
+	$first_state = $state_php[0]['state']['abbreviation'];
+
+	foreach ($state_php as $state) {
+		if(strcmp($first_state, $state['state']['abbreviation']) != 0) {
+			$states[] = $state['state']['abbreviation'];
+			$first_state = $state['state']['abbreviation'];
+		} 
+	}
+
+	echo "<h3>Senate</h3>";
+
+	if(count($states) > 1) {
+		echo "<p>Your postcode crosses two states. Please <a href=\"http://www.aec.gov.au/About_AEC/Contact_the_AEC/index.htm\" target=\"_blank\">contact the AEC</a> to confirm your electorate.</p>";
+		echo "<p>";
+
+		foreach ($states as $electorate) {
+			echo "Check candidates in <a href=\"#" . $electorate . "\">" . $electorate . "</a><br />";
 		}
 
-		foreach ($states as $state) {
-			if(strcmp($politician['electorate'],$state) == 0) {
+		echo "</p>";
+	}
+	else {
+		echo "<p>" . $postcode . " means your state is " . $states[0] . "</p>";
+	}
+
+	foreach($states as $electorate) {
+		if(count($states) > 1) {
+			echo "<h3 id=\"" . $electorate . "\">" . $electorate . "</h3>";
+		}
+
+		foreach($politicians_array as $politician) {
+			//If the candidate's flag has been individually set, use that
+			//Else use the party flag
+			$flag = $politician['flag'];
+
+			if(($flag == NULL) || ($flag == 4)) {
+				$flag = $politician['partyFlag'];
+			}
+
+			if(strcmp($politician['electorate'],$electorate) == 0) {
 				$image_link;
 
 				switch ($flag) {
@@ -139,22 +165,25 @@
 	                    break;
 	            }
 
-				echo "<span class=\"badge\"><img src=\"" . get_stylesheet_directory_uri() . '/images/' . $image_link . ".png\"></span>";
+	            echo "<span class=\"badge\"><img src=\"" . get_stylesheet_directory_uri() . '/images/' . $image_link . ".png\"></span>";
 				echo "<span class=\"name\">";
-				echo "<h3>" . $politician['name'] . "</h3>";
-				echo "<h4>" . $politician['partyName'] . " in " . $politician['electorate'] . "</h4>";
+				echo "<h4>" . $politician['name'] . "</h4>";
+				echo "<h5>" . $politician['partyName'] . "</h5>";
+				echo "<p class=\"contact\">";
+				if(strlen($politician['phone']) > 0) {
+					echo "<span class=\"bold\">ph: </span>" . $politician['phone'] . "<br />";
+				}
+				if(strlen($politician['email']) > 0) {
+					echo "<span class=\"bold\">@: </span>" . $politician['email'];
+				}
+				echo "</p>";
 				echo "</span>";
+				echo "<div class=\"clearfix\"></div>";
 				if(strlen($politician['partyPos']) > 0) {
 					echo "<p>" . stripcslashes($politician['partyPos']) . "</p>";
 				}
 				if(strlen($politician['partyQuote']) > 0) {
 					echo "<p class=\"quote\">&ldquo;" . $politician['partyQuote'] .  "&rdquo; (<a href=\"" . $politician['partyRef'] . "\" target\"_blank\">reference</a>)</p>";
-				}
-				if(strlen($politician['phone']) > 0) {
-					echo "<p><span class=\"bold\">Phone number:</span> " . $politician['phone'] . "<br />";
-				}
-				if(strlen($politician['email']) > 0) {
-					echo "<p><span class=\"bold\">Email address:</span> " . $politician['email'] . "<br />";
 				}
 				echo "<hr />";
 			}

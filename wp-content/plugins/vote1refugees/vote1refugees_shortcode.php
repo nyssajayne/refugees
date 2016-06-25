@@ -1,5 +1,3 @@
-<?php  ?>
-
 <form action="<?php echo esc_attr($_SERVER['REQUEST_URI']); ?>" method="post" id="search_politicians">
 <input type="number" id="postcode" name="postcode" />
 <input type="submit" /><input type="reset" />

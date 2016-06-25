@@ -167,6 +167,7 @@ article .postcode_results hr {
 }
 article .postcode_results span {
   float: left;
+  display: block;
 }
 article .postcode_results .clearfix {
   margin-bottom: 1.8rem;
@@ -278,5 +279,8 @@ form p .required {
   }
   article p {
     line-height: 3rem;
+  }
+  form #postcode {
+    width: 100%;
   }
 }

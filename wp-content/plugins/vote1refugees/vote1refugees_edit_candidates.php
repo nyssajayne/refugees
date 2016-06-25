@@ -31,8 +31,6 @@
                     // Change/remove current tab to active
                     //jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
 
-                    console.log(currentAttrValue);
- 
                     e.preventDefault();
                 });
             });
@@ -43,17 +41,17 @@
             <a href="#senate">Senate</a>
         </div>
 
-        <?php $politicians_array = vote1refugees_fetch_politicians();
+        <?php $candidates_array = vote1refugees_fetch_candidates();
 
         $reps = array();
         $senate = array();
 
-        foreach ($politicians_array as $politicians) {
-            if(strcmp($politicians['house'], 'representatives') == 0) {
-                $reps[] = $politicians;
+        foreach ($candidates_array as $candidates) {
+            if(strcmp($candidates['house'], 'reps') == 0) {
+                $reps[] = $candidates;
             }
-            elseif (strcmp($politicians['house'], 'senate') == 0) {
-                $senate[] = $politicians;
+            elseif (strcmp($candidates['house'], 'senate') == 0) {
+                $senate[] = $candidates;
             }
         } ?>
 
@@ -63,40 +61,30 @@
             <tr>
                 <td></td>
                 <td></td>
+                <td><strong>Contact phone</strong></td>
+                <td><strong>Contact Email</strong></td>
                 <td><strong>Any comments?</strong></td>
-                <td><strong>Contact the politician</strong></td>
             </tr>
         
-        <?php foreach($reps as $politician):
+        <?php foreach($reps as $candidate):
             echo "<tr>";
-            echo "<td>" . $politician['name'] . " (" . $politician['party'] . ")</td>";
-            echo "<td><select name=\"flag[" . $politician['id'] . "]\" id=\"" . $politician['id'] . "\">";
+            echo "<td>" . $candidate['name'] . " (" . $candidate['partyName'] . ")</td>";
+            echo "<td><select name=\"flag[" . $candidate['id'] . "]\" id=\"" . $candidate['id'] . "\">";
 
             $red = null;
             $orange = null;
             $green = null;
             $unknown = null;
 
-            $comment = '';
-            $contact = '';
-
-            if(isset($politician['comment'])) {
-                $comment = $politician['comment'];
-            }
-
-            if(isset($politician['contact'])) {
-                $contact = $politician['contact'];
-            }
-
-            switch ($politician['flag']) {
+            switch ($candidate['flag']) {
                 case '1':
                     $green = 'selected';
                     break;
                 case '2':
-                    $orange = 'selected';
+                    $red = 'selected';
                     break;
                 case '3':
-                    $red = 'selected';
+                    $orange = 'selected';
                     break;
                 case '4':
                     $unknown = 'selected';
@@ -108,12 +96,13 @@
             }
 
             echo "<option value=\"1\"" . $green . ">Green</option>
-                <option value=\"2\"" . $orange . ">Orange</option>
-                <option value=\"3\"" . $red . ">Red</option>
+                <option value=\"2\"" . $red . ">Red</option>
+                <option value=\"3\"" . $orange . ">Orange</option>
                 <option value=\"4\"" . $unknown . ">Unknown</option>
                 </select></td>";
-            echo "<td><input type=\"text\" id=\"comment_" . $politician['id'] . "\" name=\"comment_" . $politician['id'] . "\" value=\"" . $comment . "\" /></td>";
-            echo "<td><input type=\"text\" id=\"contact_" . $politician['id'] . "\" name=\"contact_" . $politician['id'] . "\" value=\"" . $contact . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"phone_" . $candidate['id'] . "\" name=\"phone_" . $candidate['id'] . "\" value=\"" . $candidate['phone'] . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"email_" . $candidate['id'] . "\" name=\"email_" . $candidate['id'] . "\" value=\"" . $candidate['email'] . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"comment_" . $candidate['id'] . "\" name=\"comment_" . $candidate['id'] . "\" value=\"" . $candidate['comment'] . "\" /></td>";
             echo "</tr>";
 
         endforeach;
@@ -124,39 +113,29 @@
             <tr>
                 <td></td>
                 <td></td>
+                <td><strong>Contact phone</strong></td>
+                <td><strong>Contact Email</strong></td>
                 <td><strong>Any comments?</strong></td>
-                <td><strong>Contact the politician</strong></td>
             </tr>
-    <?php foreach($senate as $politician):
+    <?php foreach($senate as $candidate):
             echo "<tr>";
-            echo "<td>" . $politician['name'] . " (" . $politician['party'] . ")</td>";
-            echo "<td><select name=\"flag[" . $politician['id'] . "]\" id=\"" . $politician['id'] . "\">";
+            echo "<td>" . $candidate['name'] . " (" . $candidate['partyName'] . ")</td>";
+            echo "<td><select name=\"flag[" . $candidate['id'] . "]\" id=\"" . $candidate['id'] . "\">";
 
             $red = null;
             $orange = null;
             $green = null;
             $unknown = null;
 
-            $comment;
-            $contact;
-
-            if(isset($politician['comment'])) {
-                $comment = $politician['comment'];
-            }
-
-            if(isset($politician['contact'])) {
-                $contact = $politician['contact'];
-            }
-
-            switch ($politician['flag']) {
+            switch ($candidate['flag']) {
                 case '1':
                     $green = 'selected';
                     break;
                 case '2':
-                    $orange = 'selected';
+                    $red = 'selected';
                     break;
                 case '3':
-                    $red = 'selected';
+                    $orange = 'selected';
                     break;
                 case '4':
                     $unknown = 'selected';
@@ -168,12 +147,13 @@
             }
 
             echo "<option value=\"1\"" . $green . ">Green</option>
-                <option value=\"2\"" . $orange . ">Orange</option>
-                <option value=\"3\"" . $red . ">Red</option>
+                <option value=\"2\"" . $red . ">Red</option>
+                <option value=\"3\"" . $orange . ">Orange</option>
                 <option value=\"4\"" . $unknown . ">Unknown</option>
                 </select></td>";
-            echo "<td><input type=\"text\" id=\"comment_" . $politician['id'] . "\" name=\"comment_" . $politician['id'] . "\" value=\"" . $comment . "\" /></td>";
-            echo "<td><input type=\"text\" id=\"contact_" . $politician['id'] . "\" name=\"contact_" . $politician['id'] . "\" value=\"" . $contact . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"phone_" . $candidate['id'] . "\" name=\"phone_" . $candidate['id'] . "\" value=\"" . $candidate['phone'] . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"email_" . $candidate['id'] . "\" name=\"email_" . $candidate['id'] . "\" value=\"" . $candidate['email'] . "\" /></td>";
+            echo "<td><input type=\"text\" id=\"comment_" . $candidate['id'] . "\" name=\"comment_" . $candidate['id'] . "\" value=\"" . $candidate['comment'] . "\" /></td>";
             echo "</tr>";
 
         endforeach;

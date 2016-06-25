@@ -3,95 +3,12 @@
 Plugin Name: Vote 1 Refugees
 Plugin URI: http://www.shoesandblues.com
 Description: Is your representative for or against mandatory detention this election?
-Version: 0.1
+Version: 0.2
 Author: Nyssa & Brendan
 Author URI: http://www.shoesandblues.com
 License: This Vote 1 Refugees Wordpress Plugin is made available under the Open Database License: http://opendatacommons.org/licenses/odbl/1.0/. Any rights in individual contents of the database are licensed under the Database Contents License: http://opendatacommons.org/licenses/dbcl/1.0/
 License URI: http://opendatacommons.org/licenses/odbl/1.0/
 */
-
-function vote1refugees_add_politicians() {
-	global $wpdb;
-	include('vote1refugees_variables.php');
-
-	$politicians_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
-	$politicians_array = json_decode($politicians_json, true);
-
-	$table_name = $wpdb->prefix . 'refugees';
-
-	foreach($politicians_array as $key => $value) {
-		$wpdb->insert(
-			$table_name,
-			array(
-				'id' => $value['id'],
-			)
-		);
-	}
-}
-
-function vote1refugees_fetch_politicians() {
-	global $wpdb;
-	include('vote1refugees_variables.php');
-
-	$table_name = $wpdb->prefix . 'refugees';
-
-    $wpdb_politicians = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
-
-    $tvfy_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
-    $tvfy_array = json_decode($tvfy_json, true);
-
-    $politicians_array = array();
-
-    foreach($tvfy_array as $tvfy_politician){
-        foreach($wpdb_politicians as $wpdb_politician) {
-            if($wpdb_politician['id'] == $tvfy_politician['id']) {
-
-            	$politicians_array[] = array('id' => $wpdb_politician['id'],
-            		'name' => $tvfy_politician['latest_member']['name']['first'] . " " . $tvfy_politician['latest_member']['name']['last'],
-            		'party' => $tvfy_politician['latest_member']['party'],
-            		'electorate' => $tvfy_politician['latest_member']['electorate'],
-            		'house' => $tvfy_politician['latest_member']['house'],
-            		'flag' => $wpdb_politician['flag'],
-            		'comment' => $wpdb_politician['comment'],
-            		'contact' => $wpdb_politician['contact']);
-            }
-        }
-    }
-
-    return $politicians_array;
-}
-
-function vote1refugees_fetch_politicians_old() {
-	global $wpdb;
-	include('vote1refugees_variables.php');
-
-	$table_name = $wpdb->prefix . 'refugees_old';
-
-    $wpdb_politicians = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
-
-    $tvfy_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
-    $tvfy_array = json_decode($tvfy_json, true);
-
-    $politicians_array = array();
-
-    foreach($tvfy_array as $tvfy_politician){
-        foreach($wpdb_politicians as $wpdb_politician) {
-            if($wpdb_politician['id'] == $tvfy_politician['id']) {
-
-            	$politicians_array[] = array('id' => $wpdb_politician['id'],
-            		'name' => $tvfy_politician['latest_member']['name']['first'] . " " . $tvfy_politician['latest_member']['name']['last'],
-            		'party' => $tvfy_politician['latest_member']['party'],
-            		'electorate' => $tvfy_politician['latest_member']['electorate'],
-            		'house' => $tvfy_politician['latest_member']['house'],
-            		'flag' => $wpdb_politician['flag'],
-            		'comment' => $wpdb_politician['comment'],
-            		'contact' => $wpdb_politician['contact']);
-            }
-        }
-    }
-
-    return $politicians_array;
-}
 
 function vote1refugees_add_menu_page() {
 	add_menu_page(
@@ -113,20 +30,29 @@ function vote1refugees_add_menu_page() {
 
 	add_submenu_page(
 		'vote1refugees_settings',
-		'Edit Politicians (old)',
-		'Edit Politicians (old)',
+		'Edit Sitting Politicians',
+		'Edit Sitting Politicians',
 		'read',
-		'edit_politicians_old',
-		'vote1refugees_add_edit_politicians_page_old'
+		'edit_politicians_via_tvfy',
+		'vote1refugees_add_edit_politicians_via_tvfy'
 	);
 
 	add_submenu_page(
 		'vote1refugees_settings',
-		'Edit Politicians',
-		'Edit Politicians',
+		'Edit Candidates',
+		'Edit Candidates',
 		'read',
-		'edit_politicians',
-		'vote1refugees_add_edit_politicians_page'
+		'edit_candidates',
+		'vote1refugees_add_edit_candidates_page'
+	);
+
+	add_submenu_page(
+		'vote1refugees_settings',
+		'Edit Parties',
+		'Edit Parties',
+		'read',
+		'edit_parties',
+		'vote1refugees_add_edit_parties_page'
 	);
 }
 
@@ -206,16 +132,23 @@ function vote1refugees_settings_init() {
 
 add_action( 'admin_init', 'vote1refugees_settings_init' );
 
-function vote1refugees_add_edit_politicians_page_old() {
+function vote1refugees_add_edit_politicians_via_tvfy() {
     ob_start();
-	include('vote1refugees_edit_politicians_old.php');
+	include('vote1refugees_edit_politicians_via_tvfy.php');
 	$content = ob_get_clean();
 	echo $content;
 }
 
-function vote1refugees_add_edit_politicians_page() {
+function vote1refugees_add_edit_candidates_page() {
     ob_start();
-	include('vote1refugees_edit_politicians.php');
+	include('vote1refugees_edit_candidates.php');
+	$content = ob_get_clean();
+	echo $content;
+}
+
+function vote1refugees_add_edit_parties_page() {
+    ob_start();
+	include('vote1refugees_edit_parties.php');
 	$content = ob_get_clean();
 	echo $content;
 }
@@ -274,45 +207,145 @@ function vote1refugees_shortcode_check_pollies(){
 
 add_shortcode( 'check_pollies', 'vote1refugees_shortcode_check_pollies' );
 
-function vote1refugees_shortcode_social() {
-	ob_start();
-	include('vote1refugees_social.php');
-	$content = ob_get_clean();
-	return $content;
+/* Sitting Politicians */
+function vote1refugees_add_politicians_via_tvfy() {
+	global $wpdb;
+	include('vote1refugees_variables.php');
+
+	$politicians_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
+	$politicians_array = json_decode($politicians_json, true);
+
+	$table_name = $wpdb->prefix . 'politicians';
+
+	foreach($politicians_array as $key => $value) {
+		$wpdb->insert(
+			$table_name,
+			array(
+				'id' => $value['id'],
+			)
+		);
+	}
 }
 
-add_shortcode( 'social', 'vote1refugees_shortcode_social' );
+function vote1refugees_fetch_politicians_via_tvfy() {
+	global $wpdb;
+	include('vote1refugees_variables.php');
 
-function vote1refugees_share_twitter() {
-	$sharing_text = esc_attr(get_option('sharing_options_twitter'));
+	$table_name = $wpdb->prefix . 'politicians';
 
-	$twitter_link = 'twitter.com/intent/tweet?text=' . $sharing_text . ' ' . get_bloginfo( 'url' );
+    $wpdb_politicians = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
 
-	//return "<a href=\"" . $twitter_link . "\" target=\"_blank\">Twitter</a>";
-	return $twitter_link;
+    $tvfy_json = file_get_contents('https://theyvoteforyou.org.au/api/v1/people.json?key=' . $THEYVOTEFORYOU);
+    $tvfy_array = json_decode($tvfy_json, true);
+
+    $politicians_array = array();
+
+    foreach($tvfy_array as $tvfy_politician){
+        foreach($wpdb_politicians as $wpdb_politician) {
+            if($wpdb_politician['id'] == $tvfy_politician['id']) {
+
+            	$politicians_array[] = array('id' => $wpdb_politician['id'],
+            		'name' => $tvfy_politician['latest_member']['name']['first'] . " " . $tvfy_politician['latest_member']['name']['last'],
+            		'party' => $tvfy_politician['latest_member']['party'],
+            		'electorate' => $tvfy_politician['latest_member']['electorate'],
+            		'house' => $tvfy_politician['latest_member']['house'],
+            		'flag' => $wpdb_politician['flag'],
+            		'comment' => $wpdb_politician['comment'],
+            		'contact' => $wpdb_politician['contact']);
+            }
+        }
+    }
+
+    return $politicians_array;
 }
 
-add_shortcode( 'share_twitter', 'vote1refugees_share_twitter' );
+/* Current Candidates */
+function vote1refugees_fetch_candidates() {
+	global $wpdb;
 
-function vote1refugees_share_facebook() {
-	$fb_link = 'www.facebook.com/sharer/sharer.php?u=' . get_bloginfo( 'url' ) . '&title=' . get_bloginfo( 'title' );
+	$table_name_candidates = $wpdb->prefix . 'candidates';
+	$table_name_party = $wpdb->prefix . 'party';
 
-	//return "<a href=\"" . $fb_link . "\" target=\"_blank\">Facebook</a>";
-	return $fb_link;
+    $wpdb_candidates = $wpdb->get_results( "SELECT * FROM $table_name_candidates", ARRAY_A );
+    $wpdb_parties = $wpdb->get_results( "SELECT * FROM $table_name_party", ARRAY_A );
+
+    $candidates = array();
+
+    foreach ($wpdb_candidates as $candidate) {
+    	//Fetch the party
+    	$party_name;
+    	$party_flag;
+    	$party_pos;
+    	$party_quote;
+    	$party_ref;
+
+    	foreach($wpdb_parties as $parties) {
+    		if($candidate['partyID'] == $parties['id']) {
+    			$party_name = $parties['partyName'];
+    			$party_flag = $parties['flag'];
+    			$party_pos = $parties['comment'];
+    			$party_quote = $parties['quote'];
+    			$party_ref = $parties['reference'];
+    		}
+    	}
+
+    	//Fetch the house
+    	$house;
+
+    	if(is_numeric($candidate['house'])) {
+    		$house = 'reps';
+    	}
+    	else {
+    		$house = 'senate';
+    	}
+
+    	$candidates[] = array( 'id' => $candidate['id'],
+    		'name'			=> $candidate['firstName'] . ' ' . $candidate['lastName'],
+    		'electorate'	=> $candidate['electorate'],
+    		'house'			=> $house,
+    		'partyName'		=> $party_name,
+    		'partyFlag'		=> $party_flag,
+    		'partyPos'		=> $party_pos,
+    		'partyQuote'	=> $party_quote,
+    		'partyRef'		=> $party_ref,
+    		'ballotPos'		=> $candidate['ballotPos'],
+    		'phone'			=> $candidate['contactNo'],
+    		'email'			=> $candidate['contactEmail'],
+    		'comment'		=> $candidate['comment'],
+    		'flag'			=> $candidate['flag']
+    		);
+    }
+
+    return $candidates;
 }
 
-add_shortcode( 'share_facebook', 'vote1refugees_share_facebook' );
+function vote1refugees_fetch_parties() {
+	global $wpdb;
 
-function vote1refugees_share_email(){
-	$email_link = 'mailto:%20?subject=' . get_bloginfo( 'title' ) . '&body=' . esc_attr(get_option('sharing_options_email')) . ' ' . get_bloginfo( 'url' );
+	$table_name_party = $wpdb->prefix . 'party';
 
-	return $email_link;
+	$wpdb_parties = $wpdb->get_results( "SELECT * FROM $table_name_party", ARRAY_A );
+
+    $parties = array();
+
+    foreach ($wpdb_parties as $party) {
+    	$parties[] = array( 'id' => $party['id'],
+    	'name'	=> $party['partyName'],
+    	'flag'	=> $party['flag'],
+    	'comment'	=> $party['comment'],
+    	'quote'	=> $party['quote'],
+    	'reference'	=> $party['reference'] );
+    }
+
+    return $parties;
 }
-
-add_shortcode( 'share_email', 'vote1refugees_share_email' );
  
 function vote1refugees_install() {
 	global $wpdb;
+
+	global $vote1refugees_db_version;
+	$vote1refugees_db_version = '0.1';
+	$vote1refugees_installed_version = get_option( 'vote1refugees_db_version' );
 
 	$table_name = $wpdb->prefix . "refugees";
 
@@ -327,10 +360,68 @@ function vote1refugees_install() {
 	) $charset_collate;";
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
+		
 	dbDelta( $sql );
 
-	vote1refugees_add_politicians();
+	add_option( 'vote1refugees_db_version', $vote1refugees_db_version );
+
+	if ( $vote1refugees_installed_version != $vote1refugees_db_version ) {
+
+		$table_name_candidates = $wpdb->prefix . "candidates";
+		$table_name_politicians = $wpdb->prefix . "politicians";
+		$table_name_party = $wpdb->prefix . "party";
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE $table_name_candidates (
+			id mediumint(6) NOT NULL,
+			firstName varchar(120),
+			lastName varchar(120),
+			electorate varchar(120),
+			house varchar(2),
+			ballotPos varchar(2),
+			partyID tinyint(1),
+			contactNo varchar(120),
+			contactEmail varchar(120),
+			flag tinyint(1),
+			comment varchar(2000),
+			UNIQUE KEY id (id)
+		) $charset_collate;
+		CREATE TABLE $table_name_party (
+			id mediumint(6) NOT NULL,
+			partyName varchar(120),
+			flag tinyint(1),
+			comment varchar(2000),
+			quote varchar(2000),
+			reference varchar(260),
+			UNIQUE KEY id (id)
+		) $charset_collate;
+		CREATE TABLE $table_name_politicians (
+			id mediumint(6) NOT NULL,
+			flag tinyint(1),
+			comment varchar(2000),
+			contact varchar(120),
+			UNIQUE KEY id (id)
+		) $charset_collate;";
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		
+		dbDelta( $sql );
+
+		update_option( 'vote1refugees_db_version', $vote1refugees_db_version );
+
+		//vote1refugees_add_politicians_via_tvfy();
+	}
 }
+
+function vote1refugees_update_db_check() {
+	global $vote1refugees_db_version;
+
+	if(get_site_option('vote1refugees_db_version') != $vote1refugees_db_version) {
+		vote1refugees_install();
+	}
+}
+
+add_action( 'plugins_loaded', 'vote1refugees_update_db_check' );
 
 register_activation_hook( __FILE__, 'vote1refugees_install' );

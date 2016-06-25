@@ -43,7 +43,7 @@
             <a href="#senate">Senate</a>
         </div>
 
-        <?php $politicians_array = vote1refugees_fetch_politicians_old();
+        <?php $politicians_array = vote1refugees_fetch_politicians_via_tvfy();
 
         $reps = array();
         $senate = array();
@@ -77,8 +77,8 @@
             $green = null;
             $unknown = null;
 
-            $comment;
-            $contact;
+            $comment = '';
+            $contact = '';
 
             if(isset($politician['comment'])) {
                 $comment = $politician['comment'];
@@ -137,8 +137,8 @@
             $green = null;
             $unknown = null;
 
-            $comment;
-            $contact;
+            $comment = '';
+            $contact = '';
 
             if(isset($politician['comment'])) {
                 $comment = $politician['comment'];

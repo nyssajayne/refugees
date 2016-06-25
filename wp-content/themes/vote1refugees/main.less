@@ -139,6 +139,71 @@ article {
 		max-width: 30%;
 		height: auto;
 	}
+
+	.postcode_results {
+		margin-top: 3.6rem;
+
+		h3 {
+			font-size: 3.6rem;
+			font-weight: 700;
+			margin-bottom: 3.6rem;
+			margin-top: 3.6rem;
+		}
+
+		h4 {
+			font-size: 2.4rem;
+			font-weight: 700;
+		}
+
+		h5 {
+			font-size: 2.4rem;
+			margin-bottom: 1.8rem;
+			font-weight: 400;
+		}
+
+		.quote {
+			font-style: italic;
+		}
+
+		hr {
+			border: 0;
+			height: 0.1rem;
+			background-color: #CCC;
+			margin-bottom: 2.4rem;
+		}
+
+		span {
+			float: left;
+			display: block;
+		}
+
+		.clearfix {
+			margin-bottom: 1.8rem;
+		}
+
+		.badge,{
+			width: 25%;
+
+			img {
+				max-width: 100%;
+				height: auto;
+			}
+		}
+
+		.name {
+			width: 75%;
+			padding-left: 2.4rem;
+		}
+
+		.contact {
+			font-size: 1.8rem;
+			line-height: 1.2;
+		}
+
+		.bold {
+			font-weight: 700;
+		}
+	}
 }
 
 form {
@@ -156,18 +221,29 @@ form {
 		border: 0.3rem solid @green;
 	}
 
-	input[type="submit"] {
+	input[type="submit"], input[type="reset"] {
 		border: 0.3rem solid @purple;
 		background-color: #fff;
 		color: @purple;
 		text-transform: lowercase;
 		font-family: @raleway;
 		width: auto;
+		margin-right: 1.3rem;
 	}
 
-	input[type="submit"]:hover {
+	input[type="submit"]:hover, input[type="reset"]:hover {
 		border-color: @green;
 		color: @green;
+	}
+
+	#postcode {
+		width: auto;
+		margin-right: 1.3rem;
+		margin: 0.3rem;
+	}
+
+	#postcode:active {
+		margin: 0;
 	}
 
 	.ajax-loader {
@@ -233,6 +309,12 @@ form {
 	article {
 		p {
 			line-height: 3rem;
+		}
+	}
+
+	form {
+		#postcode {
+			width: 100%;
 		}
 	}
 }
